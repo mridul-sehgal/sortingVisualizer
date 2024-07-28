@@ -17,8 +17,45 @@
 }
 
 body {
-  background: white;
+  background:#021526;
 }
+
+/* styles/globals.css */
+
+/* Custom slider styles */
+.slider {
+  -webkit-appearance: none; /* Removes default styling in WebKit browsers */
+  height: 8px; /* Track height */
+  background: #B43F3F; /* Default track color */
+  border-radius: 5px; /* Rounded corners */
+  outline: none; /* Remove focus outline */
+  opacity: 0.7; /* Slightly transparent */
+  transition: background .15s ease-in-out, opacity .15s ease-in-out; /* Smooth transitions */
+}
+
+.slider:hover {
+  opacity: 1; /* Full opacity on hover */
+  background: #021526; /* Track color on hover */
+}
+
+.slider::-webkit-slider-thumb {
+  -webkit-appearance: none; /* Remove default styling */
+  appearance: none;
+  width: 20px; /* Thumb width */
+  height: 20px; /* Thumb height */
+  border-radius: 50%; /* Round thumb */
+  background:#FF8225; /* Thumb color */
+  cursor: pointer; /* Cursor pointer on hover */
+}
+
+.slider::-moz-range-thumb {
+  width: 20px; /* Thumb width */
+  height: 20px; /* Thumb height */
+  border-radius: 50%; /* Round thumb */
+  background: #FF8225; /* Thumb color */
+  cursor: pointer; /* Cursor pointer on hover */
+}
+
 
 @layer utilities {
   .text-balance {

@@ -1,68 +1,56 @@
-interface MergeSortParams {
-  array: number[];
-  low: number;
-  high: number;
-}
 
-function mergeSort(array: number[], animations: number[][]): number[] {
-  const auxArray = array.slice(); // Create an auxiliary array
+export const mergeSort = async (
+  array: number[],
+  low: number,
+  high: number,
+  onSwap: (array: number[]) => void
+): Promise<void> => {
+  if (low >= high) return;
 
-  function merge(arr: number[], low: number, mid: number, high: number): void {
-    let left = low;
-    let right = mid + 1;
-    let index = low;
+  const mid = Math.floor((low + high) / 2);
+  await mergeSort(array, low, mid, onSwap);    // left half
+  await mergeSort(array, mid + 1, high, onSwap); // right half
+  await merge(array, low, mid, high, onSwap);   // merging sorted halves
+};
 
-    while (left <= mid && right <= high) {
-      animations.push([left, right]); // Marking the indices being compared
-      animations.push([left, right]); // Reverting back to the original color
+const merge = async (
+  array: number[],
+  low: number,
+  mid: number,
+  high: number,
+  onSwap: (array: number[]) => void
+) => {
+  const temp: number[] = [];
+  let left = low;     // starting index of left half of array
+  let right = mid + 1; // starting index of right half of array
 
-      if (arr[left] <= arr[right]) {
-        animations.push([index, arr[left]]); // Overwriting the value at index index
-        auxArray[index++] = arr[left++];
-      } else {
-        animations.push([index, arr[right]]); // Overwriting the value at index index
-        auxArray[index++] = arr[right++];
-      }
-    }
-
-    while (left <= mid) {
-      animations.push([left, left]); // Marking the index being compared
-      animations.push([left, left]); // Reverting back to the original color
-      animations.push([index, arr[left]]); // Overwriting the value at index index
-      auxArray[index++] = arr[left++];
-    }
-
-    while (right <= high) {
-      animations.push([right, right]); // Marking the index being compared
-      animations.push([right, right]); // Reverting back to the original color
-      animations.push([index, arr[right]]); // Overwriting the value at index index
-      auxArray[index++] = arr[right++];
-    }
-
-    // Copy sorted elements from auxArray back to arr
-    for (let i = low; i <= high; i++) {
-      arr[i] = auxArray[i];
+  // storing elements in the temporary array in a sorted manner
+  while (left <= mid && right <= high) {
+    if (array[left] <= array[right]) {
+      temp.push(array[left]);
+      left++;
+    } else {
+      temp.push(array[right]);
+      right++;
     }
   }
 
-  function mergeSortHelper(arr: number[], low: number, high: number): void {
-    if (low >= high) {
-      return;
-    }
-
-    const mid = Math.floor((low + high) / 2);
-    mergeSortHelper(arr, low, mid);
-    mergeSortHelper(arr, mid + 1, high);
-    merge(arr, low, mid, high);
+  // if elements on the left half are still left
+  while (left <= mid) {
+    temp.push(array[left]);
+    left++;
   }
 
-  mergeSortHelper(array, 0, array.length - 1);
-  return array;
-}
+  // if elements on the right half are still left
+  while (right <= high) {
+    temp.push(array[right]);
+    right++;
+  }
 
-export default function getMergeSortAnimations(array: number[]): number[][] {
-  const animations: number[][] = [];
-  if (array.length <= 1) return animations;
-  mergeSort(array, animations);
-  return animations;
-}
+  // transferring all elements from temporary to array
+  for (let i = low; i <= high; i++) {
+    array[i] = temp[i - low];
+    onSwap([...array]);
+    await new Promise((resolve) => setTimeout(resolve, 30)); // delay for visualization
+  }
+};
